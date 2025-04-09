@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل حضور لقاء نافس</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to right, #f8f9fa, #dbece3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: right;
+    }
+
+    .form-container {
+      background: linear-gradient(145deg, #ffffff, #f0fff4);
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 700px;
+      border: 2px solid #a2d9b9;
+    }
+
+    h2 {
+      text-align: center;
+      color: #157347;
+      margin-bottom: 30px;
+      font-weight: 700;
+      font-size: 26px;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      font-size: 16px;
+      background-color: #f9fdfc;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #28a745;
+      background-color: #ffffff;
+      outline: none;
+    }
+
+    .form-group label {
+      position: absolute;
+      right: 16px;
+      top: 14px;
+      background: white;
+      padding: 0 6px;
+      color: #666;
+      transition: 0.2s ease;
+      pointer-events: none;
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group textarea:focus + label,
+    .form-group textarea:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group select:not([value=""]) + label {
+      top: -10px;
+      font-size: 13px;
+      color: #157347;
+    }
+
+    button {
+      background: linear-gradient(to right, #28a745, #218838);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      width: 100%;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    button:hover {
+      background: linear-gradient(to right, #218838, #1e7e34);
+    }
+
+    #response {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>تسجيل حضور لقاء نافس</h2>
+    <form id="studentForm">
+      <div class="form-group">
+        <input type="text" name="guardianName" placeholder=" " pattern="^[\u0600-\u06FF\s]+$" required>
+        <label>اسم ولي أمر الطالب</label>
+      </div>
+
+      <div class="form-group">
+        <input type="text" name="studentName" placeholder=" " pattern="^[\u0600-\u06FF\s]+$" required>
+        <label>اسم الطالب</label>
+      </div>
+
+      <div class="form-group">
+        <input type="tel" name="phone" id="phone" placeholder=" " pattern="^05\d{8}$" required>
+        <label>رقم الجوال</label>
+      </div>
+
+      <div class="form-group">
+        <select name="class" required>
+          <option value="" disabled selected></option>
+          <option>3/أ</option>
+          <option>3/ب</option>
+          <option>3/ج</option>
+          <option>3/د</option>
+          <option>6/أ</option>
+          <option>6/ب</option>
+          <option>6/ج</option>
+          <option>6/د</option>
+        </select>
+        <label>الصف</label>
+      </div>
+
+      <div class="form-group">
+        <textarea name="notes" rows="4" placeholder=" " pattern="^[\u0600-\u06FF\s]+$"></textarea>
+        <label>الملاحظات والإقتراحات</label>
+      </div>
+
+      <button type="submit">إرسال</button>
+    </form>
+
+    <p id="response"></p>
+  </div>
+
+  <script>
+    // تحويل الأرقام العربية إلى إنجليزية تلقائيًا
+    document.getElementById('phone').addEventListener('input', function () {
+      this.value = this.value.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+    });
+
+    document.getElementById('studentForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      fetch('https://script.google.com/macros/s/AKfycbyCOAlc5KIiIFShKTiyGeO3RJ29Fw_yACHKXb0S1BcOui44cEuAENgHEbzhcMFP_5HJsw/exec', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('response').textContent = '✅ تم الإرسال بنجاح!';
+        this.reset();
+      })
+      .catch(err => {
+        document.getElementById('response').textContent = '❌ حدث خطأ أثناء الإرسال.';
+        console.error(err);
+      });
+    });
+  </script>
+
+</body>
+</html>
